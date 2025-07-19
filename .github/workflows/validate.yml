@@ -1,6 +1,7 @@
+# Miktos Workflows Validation
 name: Workflow Validation
-# GitHub Actions workflow for validating workflow files
 
+# GitHub Actions workflow for validating workflow files
 on:
   push:
     branches: [ main, develop ]
