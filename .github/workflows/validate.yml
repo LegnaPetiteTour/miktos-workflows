@@ -1,4 +1,5 @@
 name: Workflow Validation
+# GitHub Actions workflow for validating workflow files
 
 on:
   push:
