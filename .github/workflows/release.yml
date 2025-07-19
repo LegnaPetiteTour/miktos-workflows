@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create Release Archive
+      run: |
+        zip -r miktos-workflows-${{ github.ref_name }}.zip workflows/ README.md LICENSE
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Miktos Workflows ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          ## What's Changed
+          
+          This release includes the latest workflow templates and improvements.
+          
+          ### Installation
+          
+          1. Download the `miktos-workflows-${{ github.ref_name }}.zip` file
+          2. Extract to your ComfyUI custom_nodes directory
+          3. Follow the individual workflow README instructions
+          
+          ### Workflows Included
+          
+          See the [README](https://github.com/Miktos-Universe/miktos-workflows/blob/main/README.md) for a complete list of available workflows.
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./miktos-workflows-${{ github.ref_name }}.zip
+        asset_name: miktos-workflows-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
