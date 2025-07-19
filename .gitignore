@@ -1,0 +1,66 @@
+# Workflow outputs and generated content
+output/
+generated/
+temp/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.avi
+*.mov
+
+# AI models (these should be downloaded separately)
+models/
+*.ckpt
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Cache and temporary files
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node modules (if any JS tooling is used)
+node_modules/
+
+# Python virtual environments
+venv/
+env/
+.venv/
+
+# ComfyUI specific
+custom_nodes/
+ComfyUI/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Documentation build
+docs/_build/
