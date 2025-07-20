@@ -1,4 +1,3 @@
-# Miktos Workflows Release
 name: Release
 
 # GitHub Actions workflow for creating releases
