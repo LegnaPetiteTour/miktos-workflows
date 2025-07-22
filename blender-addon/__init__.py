@@ -65,13 +65,13 @@ class MiktosAddonPreferences(AddonPreferences):
         layout.prop(self, "auto_connect")
 
 
-class MiktosTextureProperties(PropertyGroup):
-    """Properties for AI texture generation"""
+class Miktos3DContentProperties(PropertyGroup):
+    """Properties for 3D content generation"""
     
     prompt = StringProperty(
-        name="Texture Prompt",
-        description="Describe the texture you want to generate",
-        default="rusty metal surface with scratches and weathering",
+        name="Content Prompt",
+        description="Describe the 3D content you want to create",
+        default="steampunk robot character with brass pipes and gears",
         maxlen=500,
     )
     
@@ -119,49 +119,49 @@ class MiktosTextureProperties(PropertyGroup):
     
     workflow_type = EnumProperty(
         name="Workflow Type",
-        description="Type of texture generation workflow",
+        description="Type of 3D content generation workflow",
         items=[
-            ("basic_texture", "Basic Texture", "Generate a single texture"),
-            ("pbr_texture", "PBR Material", "Generate complete PBR material set"),
+            ("basic_content", "Basic 3D Content", "Generate simple 3D objects"),
+            ("advanced_scene", "Advanced Scene", "Generate complete 3D scenes"),
         ],
-        default="basic_texture",
+        default="basic_content",
     )
     
     auto_apply = BoolProperty(
         name="Auto Apply",
-        description="Automatically apply generated texture to selected objects",
+        description="Automatically apply generated content to scene",
         default=True,
     )
 
 
-class MIKTOS_OT_connect_bridge(Operator):
-    """Connect to Miktos AI Bridge"""
-    bl_idname = "miktos.connect_bridge"
-    bl_label = "Connect to AI Bridge"
-    bl_description = "Connect to the Miktos AI Bridge server"
+class MIKTOS_OT_connect_agent(Operator):
+    """Connect to Miktos Agent"""
+    bl_idname = "miktos.connect_agent"
+    bl_label = "Connect to Miktos Agent"
+    bl_description = "Connect to the Miktos Agent server"
     
     def execute(self, context):
-        global ai_bridge_connected
+        global miktos_agent_connected
         
         prefs = context.preferences.addons[__name__].preferences
         
         try:
-            # Test connection to AI Bridge
-            response = requests.get(f"{prefs.ai_bridge_url}/health", timeout=5)
+            # Test connection to Miktos Agent
+            response = requests.get(f"{prefs.miktos_agent_url}/health", timeout=5)
             
             if response.status_code == 200:
-                ai_bridge_connected = True
-                self.report({'INFO'}, "Successfully connected to Miktos AI Bridge!")
+                miktos_agent_connected = True
+                self.report({'INFO'}, "Successfully connected to Miktos Agent!")
                 
                 # Start WebSocket connection for real-time updates
                 self.start_websocket_connection(prefs.websocket_url)
                 
             else:
-                ai_bridge_connected = False
+                miktos_agent_connected = False
                 self.report({'ERROR'}, f"Failed to connect: HTTP {response.status_code}")
                 
         except Exception as e:
-            ai_bridge_connected = False
+            miktos_agent_connected = False
             self.report({'ERROR'}, f"Connection failed: {str(e)}")
             
         return {'FINISHED'}
@@ -210,26 +210,26 @@ class MIKTOS_OT_connect_bridge(Operator):
         print("WebSocket connection closed")
 
 
-class MIKTOS_OT_generate_texture(Operator):
-    """Generate AI texture using Miktos AI Bridge"""
-    bl_idname = "miktos.generate_texture"
-    bl_label = "Generate AI Texture"
-    bl_description = "Generate an AI texture based on the prompt"
+class MIKTOS_OT_generate_content(Operator):
+    """Generate 3D content using Miktos Agent"""
+    bl_idname = "miktos.generate_content"
+    bl_label = "Generate 3D Content"
+    bl_description = "Generate professional 3D content based on the prompt"
     
     def execute(self, context):
-        global ai_bridge_connected, current_task_id, generation_status
+        global miktos_agent_connected, current_task_id, generation_status
         
-        if not ai_bridge_connected:
-            self.report({'ERROR'}, "Not connected to AI Bridge. Click 'Connect' first.")
+        if not miktos_agent_connected:
+            self.report({'ERROR'}, "Not connected to Miktos Agent. Click 'Connect' first.")
             return {'CANCELLED'}
         
         # Get properties
-        props = context.scene.miktos_texture_props
+        props = context.scene.miktos_content_props
         prefs = context.preferences.addons[__name__].preferences
         
         # Prepare workflow data
         workflow_data = {
-            "workflow_type": "Basic Texture Generation" if props.workflow_type == "basic_texture" else "PBR Texture Set Generation",
+            "workflow_type": "Basic 3D Content" if props.workflow_type == "basic_content" else "Advanced 3D Scene",
             "parameters": {
                 "prompt": props.prompt,
                 "negative_prompt": props.negative_prompt,
@@ -248,7 +248,7 @@ class MIKTOS_OT_generate_texture(Operator):
         try:
             # Execute workflow via Blender-specific endpoint
             response = requests.post(
-                f"{prefs.ai_bridge_url}/api/v1/blender/generate-material",
+                f"{prefs.miktos_agent_url}/api/v1/blender/generate-content",
                 json=workflow_data,
                 timeout=10
             )
@@ -258,10 +258,10 @@ class MIKTOS_OT_generate_texture(Operator):
                 current_task_id = result.get("task_id")
                 generation_status = "started"
                 
-                self.report({'INFO'}, f"Texture generation started! Task ID: {current_task_id}")
+                self.report({'INFO'}, f"3D content generation started! Task ID: {current_task_id}")
                 
                 # Start monitoring progress
-                self.monitor_progress(context, prefs.ai_bridge_url, current_task_id)
+                self.monitor_progress(context, prefs.miktos_agent_url, current_task_id)
                 
             else:
                 self.report({'ERROR'}, f"Failed to start generation: {response.text}")
@@ -271,22 +271,22 @@ class MIKTOS_OT_generate_texture(Operator):
             
         return {'FINISHED'}
     
-    def monitor_progress(self, context, ai_bridge_url, task_id):
+    def monitor_progress(self, context, miktos_agent_url, task_id):
         """Monitor generation progress and apply texture when complete"""
         def progress_thread():
             global generation_status, generation_progress
             
             while generation_status not in ["completed", "error"]:
                 try:
-                    response = requests.get(f"{ai_bridge_url}/api/v1/task/{task_id}")
+                    response = requests.get(f"{miktos_agent_url}/api/v1/task/{task_id}")
                     if response.status_code == 200:
                         task_data = response.json()
                         generation_status = task_data.get("status", "unknown")
                         generation_progress = task_data.get("progress", 0.0)
                         
                         if generation_status == "completed":
-                            # Apply texture to selected objects
-                            if context.scene.miktos_texture_props.auto_apply:
+                            # Apply content to scene
+                            if context.scene.miktos_content_props.auto_apply:
                                 bpy.app.timers.register(
                                     lambda: self.apply_generated_texture(context, task_data)
                                 )
@@ -340,30 +340,30 @@ class MIKTOS_OT_generate_texture(Operator):
         return None
 
 
-class MIKTOS_PT_texture_panel(Panel):
-    """Main panel for Miktos AI texture generation"""
-    bl_label = "Miktos AI Textures"
-    bl_idname = "MIKTOS_PT_texture_panel"
+class MIKTOS_PT_content_panel(Panel):
+    """Main panel for Miktos 3D content generation"""
+    bl_label = "Miktos Agent"
+    bl_idname = "MIKTOS_PT_content_panel"
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "material"
     
     def draw(self, context):
         layout = self.layout
-        props = context.scene.miktos_texture_props
+        props = context.scene.miktos_content_props
         
         # Connection status
         row = layout.row()
-        if ai_bridge_connected:
-            row.label(text="✅ Connected to AI Bridge", icon='LINKED')
+        if miktos_agent_connected:
+            row.label(text="✅ Connected to Miktos Agent", icon='LINKED')
         else:
             row.label(text="❌ Not Connected", icon='UNLINKED')
             
         # Connection button
-        if ai_bridge_connected:
-            layout.operator("miktos.generate_texture", icon='TEXTURE')
+        if miktos_agent_connected:
+            layout.operator("miktos.generate_content", icon='OBJECT_DATA')
         else:
-            layout.operator("miktos.connect_bridge", icon='PLUGIN')
+            layout.operator("miktos.connect_agent", icon='PLUGIN')
         
         # Progress display
         if generation_status != "idle":
@@ -389,11 +389,11 @@ class MIKTOS_PT_texture_panel(Panel):
                                 slider=True, emboss=False)
                 
             elif generation_status == "completed":
-                layout.label(text="✅ Texture ready! Check your materials.", icon='MATERIAL')
+                layout.label(text="✅ 3D content ready! Check your objects.", icon='OBJECT_DATA')
         
         # Texture generation settings
         layout.separator()
-        layout.label(text="Texture Settings:", icon='SETTINGS')
+        layout.label(text="3D Content Settings:", icon='SETTINGS')
         
         layout.prop(props, "workflow_type")
         layout.prop(props, "prompt")
@@ -419,16 +419,16 @@ class MIKTOS_PT_texture_panel(Panel):
         if selected_objects:
             layout.label(text=f"Will apply to {len(selected_objects)} selected objects", icon='OBJECT_DATA')
         else:
-            layout.label(text="Select mesh objects to apply texture", icon='INFO')
+            layout.label(text="Select mesh objects to apply content", icon='INFO')
 
 
 # Registration
 classes = [
     MiktosAddonPreferences,
-    MiktosTextureProperties,
-    MIKTOS_OT_connect_bridge,
-    MIKTOS_OT_generate_texture, 
-    MIKTOS_PT_texture_panel,
+    Miktos3DContentProperties,
+    MIKTOS_OT_connect_agent,
+    MIKTOS_OT_generate_content, 
+    MIKTOS_PT_content_panel,
 ]
 
 def register():
@@ -437,9 +437,9 @@ def register():
         bpy.utils.register_class(cls)
     
     # Add properties to scene
-    bpy.types.Scene.miktos_texture_props = bpy.props.PointerProperty(type=MiktosTextureProperties)
+    bpy.types.Scene.miktos_content_props = bpy.props.PointerProperty(type=Miktos3DContentProperties)
     
-    print("Miktos AI Bridge Connector registered successfully!")
+    print("Miktos Agent Connector registered successfully!")
 
 def unregister():
     """Unregister addon classes and properties"""
@@ -447,9 +447,9 @@ def unregister():
         bpy.utils.unregister_class(cls)
     
     # Remove properties from scene
-    del bpy.types.Scene.miktos_texture_props
+    del bpy.types.Scene.miktos_content_props
     
-    print("Miktos AI Bridge Connector unregistered successfully!")
+    print("Miktos Agent Connector unregistered successfully!")
 
 if __name__ == "__main__":
     register()
