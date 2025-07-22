@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-Miktos AI Bridge Connector - Blender Addon
-Seamless AI texture generation directly in Blender
+Miktos Agent Connector - Blender Addon
+Professional 3D content creation through natural language
 
-This addon connects Blender to the Miktos AI Bridge for real-time
-AI texture generation and automatic material application.
+This addon connects Blender to the Miktos Agent for intelligent
+3D content creation through conversational commands.
 """
 
 bl_info = {
-    "name": "Miktos AI Bridge Connector",
+    "name": "Miktos Agent Connector",
     "author": "Miktos Platform",
     "version": (1, 0, 0),
     "blender": (3, 0, 0),
-    "location": "Properties > Material > Miktos AI",
-    "description": "Generate AI textures directly in Blender via Miktos AI Bridge",
+    "location": "Properties > Material > Miktos Agent",
+    "description": "Create professional 3D content through natural language commands",
     "category": "Material",
-    "doc_url": "https://github.com/miktos/blender-addon",
-    "tracker_url": "https://github.com/miktos/blender-addon/issues",
+    "doc_url": "https://github.com/Miktos-Universe/miktos-workflows",
+    "tracker_url": "https://github.com/Miktos-Universe/miktos-workflows/issues",
 }
 
 import bpy
@@ -31,18 +31,18 @@ from bpy.types import Panel, Operator, PropertyGroup, AddonPreferences
 import websocket
 
 # Global variables for connection state
-ai_bridge_connected = False
+miktos_agent_connected = False
 current_task_id = None
 generation_progress = 0.0
 generation_status = "idle"
 
 class MiktosAddonPreferences(AddonPreferences):
-    """Addon preferences for AI Bridge connection settings"""
+    """Addon preferences for Miktos Agent connection settings"""
     bl_idname = __name__
 
-    ai_bridge_url = StringProperty(
-        name="AI Bridge URL",
-        description="URL of the Miktos AI Bridge server",
+    miktos_agent_url = StringProperty(
+        name="Miktos Agent URL",
+        description="URL of the Miktos Agent server",
         default="http://localhost:8000",
     )
     
@@ -54,13 +54,13 @@ class MiktosAddonPreferences(AddonPreferences):
     
     auto_connect = BoolProperty(
         name="Auto Connect",
-        description="Automatically connect to AI Bridge on startup",
+        description="Automatically connect to Miktos Agent on startup",
         default=True,
     )
 
     def draw(self, context):
         layout = self.layout
-        layout.prop(self, "ai_bridge_url")
+        layout.prop(self, "miktos_agent_url")
         layout.prop(self, "websocket_url")
         layout.prop(self, "auto_connect")
 

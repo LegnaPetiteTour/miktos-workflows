@@ -1,29 +1,29 @@
-# Miktos Workflows
+# Miktos Workflows - Blender 3D Skills
 
-> Pre-built AI workflow templates and ComfyUI integrations for the Miktos creative platform
+> Pre-built Blender workflow expertise and 3D content creation skills for the Miktos Agent
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![ComfyUI](https://img.shields.io/badge/ComfyUI-FF6B6B?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSJjdXJyZW50Q29sb3IiLz4KPC9zdmc+)](https://github.com/comfyanonymous/ComfyUI)
-[![JSON](https://img.shields.io/badge/JSON-000000?logo=json&logoColor=white)](https://json.org)
+[![Blender](https://img.shields.io/badge/Blender-F5792A?logo=blender&logoColor=white)](https://blender.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white)](https://python.org)
 
-This repository contains a curated collection of AI workflow templates, ComfyUI configurations, and pre-built pipelines designed for the Miktos creative platform. These workflows enable users to quickly start creating AI-generated content without building complex pipelines from scratch.
+This repository contains a curated collection of Blender workflow skills, 3D content creation expertise, and automated Blender Python scripts designed for the Miktos Agent. These workflows enable professional 3D content creation through natural language commands.
 
 ## ✨ Features
 
-- **Ready-to-Use Templates**: Pre-configured workflows for common creative tasks
-- **ComfyUI Integration**: Native support for ComfyUI workflow format
-- **Modular Design**: Mix and match workflow components
-- **Professional Quality**: Optimized for production-level output
+- **Expert Blender Skills**: Pre-built expertise for complex 3D content creation
+- **Natural Language Interface**: Execute professional workflows through simple commands
+- **Modular Design**: Mix and match workflow components for custom 3D pipelines
+- **Professional Quality**: Optimized for production-level Blender output
 - **Well Documented**: Clear instructions and parameter explanations
-- **Version Controlled**: Track changes and improvements to workflows
+- **Version Controlled**: Track changes and improvements to 3D workflows
 
-## � Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Miktos Desktop App** or **Miktos AI Bridge** installed
-- **ComfyUI** (automatically managed by Miktos AI Bridge)
-- **AI Models** (see [Model Requirements](#model-requirements) below)
+- **Miktos Desktop App** (hosts the Miktos Agent)
+- **Blender** 3.0+ (automatically connected via Miktos Agent)
+- **Python** 3.11+ (for local AI texture generation)
 
 ### Installation
 
@@ -32,15 +32,15 @@ This repository contains a curated collection of AI workflow templates, ComfyUI 
 git clone https://github.com/Miktos-Universe/miktos-workflows.git
 cd miktos-workflows
 
-# The workflows are automatically detected by Miktos AI Bridge
+# The workflows are automatically detected by Miktos Agent
 # No additional installation required
 ```
 
 ### Using Workflows
 
-1. **Via Miktos Desktop**: Browse workflows in the built-in workflow library
-2. **Via API**: Use the Miktos AI Bridge REST API to execute workflows
-3. **Direct ComfyUI**: Import JSON files directly into ComfyUI
+1. **Via Miktos Desktop**: Natural language commands like "Create steampunk robot"
+2. **Via Agent API**: Use the Miktos Agent REST API to execute Blender workflows
+3. **Direct Blender**: Import Python scripts directly into Blender
 
 ## 📁 Workflow Categories
 
